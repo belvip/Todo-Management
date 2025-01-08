@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 public class TodoServiceImpl implements TodoService {
     private List<Todo> todos = new ArrayList<>();
+    private Long nextId = 1L;
 
     @Override
     public List<Todo> getAllTodos() {
@@ -18,6 +19,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public void addTodo(Todo todo) {
+        todo.setTodoId(nextId++);
         todos.add(todo);
 
     }

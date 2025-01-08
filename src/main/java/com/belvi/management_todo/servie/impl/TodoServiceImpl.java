@@ -23,4 +23,13 @@ public class TodoServiceImpl implements TodoService {
         todos.add(todo);
 
     }
+
+    @Override
+    public String deleteTodo(Long todoId) {
+        Todo todo = todos.stream()
+                .filter(t -> t.getTodoId().equals(todoId))
+                .findFirst().get();
+        todos.remove(todo);
+        return "Todo with todoId : " + todoId + " deleted sucessfully";
+    }
 }

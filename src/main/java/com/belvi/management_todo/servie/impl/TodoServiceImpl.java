@@ -28,7 +28,11 @@ public class TodoServiceImpl implements TodoService {
     public String deleteTodo(Long todoId) {
         Todo todo = todos.stream()
                 .filter(t -> t.getTodoId().equals(todoId))
-                .findFirst().get();
+                .findFirst().orElse(null);
+
+        if (todo == null){
+            return "Todo not found";
+        }
         todos.remove(todo);
         return "Todo with todoId : " + todoId + " deleted sucessfully";
     }

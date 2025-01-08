@@ -46,4 +46,17 @@ public class TodoController {
         }
 
     }
+
+    // Update Todo
+    @PutMapping("api/public/todos/{todoId}")
+    public ResponseEntity<String> updateTodo(@RequestBody Todo todo,
+                                             @PathVariable Long todoId) {
+        try {
+            Todo savedTodo = todoService.updateTodo(todo, todoId);
+            return new ResponseEntity<>("Todo with todo id " + savedTodo.getTodoId() + " updated successfully.", HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+        }
+    }
+
 }

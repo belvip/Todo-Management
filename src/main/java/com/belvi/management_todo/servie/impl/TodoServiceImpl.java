@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -38,4 +39,24 @@ public class TodoServiceImpl implements TodoService {
         todos.remove(todo);
         return "Todo with todoId : " + todoId + " deleted sucessfully";
     }
+
+    @Override
+    public Todo updateTodo(Todo todo, Long todoId) {
+        Optional<Todo> optionalTodo = todos.stream()
+                .filter(t -> t.getTodoId().equals(todoId))
+                .findFirst();
+
+        if(optionalTodo.isPresent()){
+            Todo existingTodo = optionalTodo.get();
+            existingTodo.setTitle(todo.getTitle());
+            existingTodo.setDescription(todo.getDescription());
+            existingTodo.setCompleted(todo.isCompleted());
+            return existingTodo;
+        }else {
+            throw new ResponseStatusException(NOT_FOUND, "Todo not found");
+        }
+
+    }
+
+
 }

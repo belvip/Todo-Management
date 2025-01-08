@@ -2,10 +2,14 @@ package com.belvi.management_todo.servie.impl;
 
 import com.belvi.management_todo.model.Todo;
 import com.belvi.management_todo.servie.TodoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -28,11 +32,9 @@ public class TodoServiceImpl implements TodoService {
     public String deleteTodo(Long todoId) {
         Todo todo = todos.stream()
                 .filter(t -> t.getTodoId().equals(todoId))
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 
-        if (todo == null){
-            return "Todo not found";
-        }
         todos.remove(todo);
         return "Todo with todoId : " + todoId + " deleted sucessfully";
     }

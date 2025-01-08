@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class TodoController {
     @Autowired
     private TodoService todoService;
@@ -22,21 +23,21 @@ public class TodoController {
     }*/
 
     // Get all todo
-    @GetMapping("api/public/todos")
+    @GetMapping("/public/todos")
     public ResponseEntity<List<Todo>> getAllTodos(){
         List<Todo> todos = todoService.getAllTodos();
         return new ResponseEntity<>(todos, HttpStatus.OK);
     }
 
     // Add new todo
-    @PostMapping("api/public/todos")
+    @PostMapping("/public/todos")
     public ResponseEntity<String> addTodo(@RequestBody Todo todo){
         todoService.addTodo(todo);
         return new ResponseEntity<>("Todo added sucessfully", HttpStatus.CREATED);
     }
 
     // Delete todo
-    @DeleteMapping("/api/admin/todos/{todoId}")
+    @DeleteMapping("/admin/todos/{todoId}")
     public  ResponseEntity<String> deleteTodo(@PathVariable Long todoId){
         try{
             String status = todoService.deleteTodo(todoId);
@@ -48,7 +49,7 @@ public class TodoController {
     }
 
     // Update Todo
-    @PutMapping("api/public/todos/{todoId}")
+    @PutMapping("/public/todos/{todoId}")
     public ResponseEntity<String> updateTodo(@RequestBody Todo todo,
                                              @PathVariable Long todoId) {
         try {

@@ -38,11 +38,8 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public String deleteTodo(Long todoId) {
-        List<Todo> todos = todoRepository.findAll();
-        Todo todo = todos.stream()
-                .filter(t -> t.getTodoId().equals(todoId))
-                .findFirst()
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 
         todoRepository.delete(todo);
         return "Todo with todoId : " + todoId + " deleted sucessfully";
@@ -50,21 +47,11 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public Todo updateTodo(Todo todo, Long todoId) {
-        List<Todo> todos = todoRepository.findAll();
-        Optional<Todo> optionalTodo = todos.stream()
-                .filter(t -> t.getTodoId().equals(todoId))
-                .findFirst();
-
-        if(optionalTodo.isPresent()){
-            Todo existingTodo = optionalTodo.get();
-            existingTodo.setTitle(todo.getTitle());
-            existingTodo.setDescription(todo.getDescription());
-            existingTodo.setCompleted(todo.isCompleted());
-            Todo savedTodo = todoRepository.save(existingTodo);
-            return savedTodo;
-        }else {
-            throw new ResponseStatusException(NOT_FOUND, "Todo not found");
-        }
+        Todo savedTodo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+        todo.setTodoId(todoId);
+        savedTodo = todoRepository.save(todo);
+        return savedTodo;
 
     }
 

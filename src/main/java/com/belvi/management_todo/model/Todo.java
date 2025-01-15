@@ -1,6 +1,7 @@
 package com.belvi.management_todo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Setter
@@ -16,6 +17,7 @@ public class Todo {
     private Long todoId;
 
     @Column(nullable = false)
+    @NotBlank
     private String title;
 
     @Column(nullable = false)

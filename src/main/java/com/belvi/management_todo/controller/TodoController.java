@@ -60,4 +60,26 @@ public class TodoController {
         }
     }
 
+    @PatchMapping("{todoId}/complete")
+    public ResponseEntity<String> completeTodo(@PathVariable Long todoId){
+        try{
+            Todo completeTodo = todoService.completeTodo(todoId);
+            return new ResponseEntity<>("Todo with todo id " + completeTodo.getTodoId() + " completed successfully.", HttpStatus.OK);
+        }catch (ResponseStatusException e){
+            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+        }
+    }
+
+    @PatchMapping("{todoId}/in-complete")
+    public ResponseEntity<String> inCompleteTodo(@PathVariable Long todoId){
+        try{
+            Todo inCompleteTodo = todoService.inCompleteTodo(todoId);
+            return new ResponseEntity<>("Todo with todo id " + inCompleteTodo.getTodoId() + " completed successfully.", HttpStatus.OK);
+        }catch (ResponseStatusException e){
+            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+        }
+    }
+
+
+
 }

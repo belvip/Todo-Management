@@ -1,65 +1,25 @@
 package com.belvi.management_todo.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+@Setter
+@Getter
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Todo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long todoId;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String description;
     private boolean completed;
 
-    public Todo(Long todoId, String title, String description, boolean completed) {
-        this.todoId = todoId;
-        this.title = title;
-        this.description = description;
-        this.completed = completed;
-    }
-
-    public Todo() {
-
-    }
-
-    public Long getTodoId() {
-
-        return todoId;
-    }
-
-    public void setTodoId(Long todoId) {
-
-        this.todoId = todoId;
-    }
-
-    public String getTitle() {
-
-        return title;
-    }
-
-    public void setTitle(String title) {
-
-        this.title = title;
-    }
-
-    public String getDescription() {
-
-        return description;
-    }
-
-    public void setDescription(String description) {
-
-        this.description = description;
-    }
-
-    public boolean isCompleted() {
-
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-
-        this.completed = completed;
-    }
 }

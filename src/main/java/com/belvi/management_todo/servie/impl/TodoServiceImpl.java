@@ -55,5 +55,26 @@ public class TodoServiceImpl implements TodoService {
 
     }
 
+    @Override
+    public Todo completeTodo(Long todoId) {
+        Todo completeTodo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+        completeTodo.setCompleted(true);
+        Todo savedTodo = todoRepository.save(completeTodo);
+        return savedTodo;
+
+    }
+
+    @Override
+    public Todo inCompleteTodo(Long todoId) {
+        Todo inCompleteTodo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+        inCompleteTodo.setCompleted(false);
+        Todo savedTodo = todoRepository.save(inCompleteTodo);
+        return savedTodo;
+    }
+
+
+
 
 }

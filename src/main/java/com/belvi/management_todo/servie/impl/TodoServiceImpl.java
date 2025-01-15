@@ -1,5 +1,6 @@
 package com.belvi.management_todo.servie.impl;
 
+import com.belvi.management_todo.exception.InvalidTodoException;
 import com.belvi.management_todo.model.Todo;
 import com.belvi.management_todo.repositories.TodoRepository;
 import com.belvi.management_todo.servie.TodoService;
@@ -28,13 +29,23 @@ public class TodoServiceImpl implements TodoService {
         return todoRepository.findAll();
     }
 
-    @Override
+    /*@Override
     public void addTodo(Todo todo) {
         //todo.setTodoId(nextId++);
         todoRepository.save(todo);
 
+    } */
+    @Override
+    public void addTodo(Todo todo) {
+        // Validation: if title or description is empty
+        if (todo.getTitle().isEmpty() || todo.getDescription().isEmpty()) {
+            throw new InvalidTodoException("Title and description cannot be empty");
+        }
 
+        // Save the todo if validation passes
+        todoRepository.save(todo);
     }
+
 
     @Override
     public String deleteTodo(Long todoId) {

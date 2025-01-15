@@ -2,14 +2,13 @@ package com.belvi.management_todo.controller;
 
 import com.belvi.management_todo.model.Todo;
 import com.belvi.management_todo.servie.TodoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,10 +29,18 @@ public class TodoController {
     }
 
     // Add new todo
-    @PostMapping("/public/todos")
-    public ResponseEntity<String> addTodo(@RequestBody Todo todo){
+    /*@PostMapping("/public/todos")
+    public ResponseEntity<String> addTodo(@Valid @RequestBody Todo todo){
         todoService.addTodo(todo);
         return new ResponseEntity<>("Todo added sucessfully", HttpStatus.CREATED);
+    }*/
+
+    @PostMapping("/public/todos")
+    public ResponseEntity<String> addTodo(@Valid @RequestBody Todo todo) {
+        todoService.addTodo(todo);
+        return new ResponseEntity<>("Todo added sucessfully", HttpStatus.CREATED);
+
+
     }
 
     // Delete todo

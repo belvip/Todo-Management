@@ -1,7 +1,10 @@
 package com.belvi.management_todo.servie.impl;
 
 import com.belvi.management_todo.model.Todo;
+import com.belvi.management_todo.repositories.TodoRepository;
 import com.belvi.management_todo.servie.TodoService;
+import com.zaxxer.hikari.util.FastList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,47 +17,41 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class TodoServiceImpl implements TodoService {
-    private List<Todo> todos = new ArrayList<>();
-    private Long nextId = 1L;
+    //private List<Todo> todos = new ArrayList<>();
+    //private Long nextId = 1L;
+
+    @Autowired
+    private TodoRepository todoRepository;
 
     @Override
     public List<Todo> getAllTodos() {
-        return todos;
+        return todoRepository.findAll();
     }
 
     @Override
     public void addTodo(Todo todo) {
-        todo.setTodoId(nextId++);
-        todos.add(todo);
+        //todo.setTodoId(nextId++);
+        todoRepository.save(todo);
+
 
     }
 
     @Override
     public String deleteTodo(Long todoId) {
-        Todo todo = todos.stream()
-                .filter(t -> t.getTodoId().equals(todoId))
-                .findFirst()
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 
-        todos.remove(todo);
+        todoRepository.delete(todo);
         return "Todo with todoId : " + todoId + " deleted sucessfully";
     }
 
     @Override
     public Todo updateTodo(Todo todo, Long todoId) {
-        Optional<Todo> optionalTodo = todos.stream()
-                .filter(t -> t.getTodoId().equals(todoId))
-                .findFirst();
-
-        if(optionalTodo.isPresent()){
-            Todo existingTodo = optionalTodo.get();
-            existingTodo.setTitle(todo.getTitle());
-            existingTodo.setDescription(todo.getDescription());
-            existingTodo.setCompleted(todo.isCompleted());
-            return existingTodo;
-        }else {
-            throw new ResponseStatusException(NOT_FOUND, "Todo not found");
-        }
+        Todo savedTodo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+        todo.setTodoId(todoId);
+        savedTodo = todoRepository.save(todo);
+        return savedTodo;
 
     }
 

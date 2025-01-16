@@ -1,6 +1,7 @@
 package com.belvi.management_todo.controller;
 
 import com.belvi.management_todo.model.Todo;
+import com.belvi.management_todo.payload.TodoResponse;
 import com.belvi.management_todo.servie.TodoService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -25,9 +26,9 @@ public class TodoController {
 
     // Get all todo
     @GetMapping("/public/todos")
-    public ResponseEntity<List<Todo>> getAllTodos(){
-        List<Todo> todos = todoService.getAllTodos();
-        return new ResponseEntity<>(todos, HttpStatus.OK);
+    public ResponseEntity<TodoResponse> getAllTodos(){
+        TodoResponse todoResponse = todoService.getAllTodos();
+        return new ResponseEntity<>(todoResponse, HttpStatus.OK);
     }
 
     // Add new todo

@@ -4,13 +4,17 @@ import com.belvi.management_todo.exception.APIException;
 import com.belvi.management_todo.exception.InvalidTodoException;
 import com.belvi.management_todo.exception.ResourceNotFoundException;
 import com.belvi.management_todo.model.Todo;
+import com.belvi.management_todo.payload.TodoDTO;
+import com.belvi.management_todo.payload.TodoResponse;
 import com.belvi.management_todo.repositories.TodoRepository;
 import com.belvi.management_todo.servie.TodoService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -18,8 +22,11 @@ public class TodoServiceImpl implements TodoService {
     @Autowired
     private TodoRepository todoRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
-    public List<Todo> getAllTodos() {
+    public TodoResponse getAllTodos() {
         // Retrieve the list of todos
         List<Todo> todos = todoRepository.findAll();
 
@@ -28,7 +35,14 @@ public class TodoServiceImpl implements TodoService {
             throw new APIException(HttpStatus.NOT_FOUND, "No todo created till now");
         }
 
-        return todos;
+        List<TodoDTO> todoDTOS = todos.stream()
+                .map(todo -> modelMapper.map(todo, TodoDTO.class))
+                .toList();
+
+        TodoResponse todoResponse = new TodoResponse();
+        todoResponse.setContent(todoDTOS);
+
+        return todoResponse;
     }
 
 

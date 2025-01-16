@@ -28,7 +28,7 @@ public class Todo {
     private String description;
 
     @NotNull(message = "Completion status must not be null")
-    @ValidCompleted
+    //@ValidCompleted
     @Column(nullable = false)
     private boolean completed;
 

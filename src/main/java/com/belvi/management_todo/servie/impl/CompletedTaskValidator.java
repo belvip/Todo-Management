@@ -9,6 +9,18 @@ public class CompletedTaskValidator implements ConstraintValidator<ValidComplete
     @Override
     public boolean isValid(Boolean value, ConstraintValidatorContext context) {
         // Validate: Completed must be true
-        return value != null && value;
+        if (value == null) {
+            // Add custom validation message
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Completion status must be true or false")
+                    .addConstraintViolation();
+            return false; // Null is invalid, you can choose whether to treat it as false or not
+        }
+        return value; // The task must be marked as true
+    }
+
+    @Override
+    public void initialize(ValidCompleted constraintAnnotation) {
+        // No initialization required for this use case
     }
 }

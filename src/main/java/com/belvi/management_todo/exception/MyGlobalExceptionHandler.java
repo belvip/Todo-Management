@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -18,6 +20,7 @@ public class MyGlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(MyGlobalExceptionHandler.class);
 
+    // Helper method to build error response
     private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String error, String message, String path) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
@@ -25,31 +28,58 @@ public class MyGlobalExceptionHandler {
         body.put("error", error);
         body.put("message", message);
         body.put("path", path);
+        body.put("traceId", UUID.randomUUID().toString()); // Example trace ID
         return new ResponseEntity<>(body, status);
     }
 
+
+    // Handle InvalidTodoException
     @ExceptionHandler(InvalidTodoException.class)
-    public ResponseEntity<Object> handleInvalidTodoException(InvalidTodoException ex) {
+    public ResponseEntity<Object> handleInvalidTodoException(InvalidTodoException ex, WebRequest request) {
         logger.error("Invalid Todo Exception: {}", ex.getMessage());
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid Todo", ex.getMessage(), "/api/public/todos");
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid Todo", ex.getMessage(), request.getDescription(false));
     }
 
+    // Handle validation errors from @Valid or @Validated
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         logger.error("Validation Error: {}", errorMessage);
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation Error", errorMessage, "/api/public/todos");
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation Error", errorMessage, request.getDescription(false));
     }
 
+    // Handle ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
-        logger.error("Resource not found: {}", e.getMessage());
-        return buildErrorResponse(HttpStatus.NOT_FOUND,
-                "Resource Not Found", e.getMessage(),
-                "/api/public/todos");
+    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        logger.error("Resource not found: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "Resource Not Found", ex.getMessage(), request.getDescription(false));
     }
+
+    // Handle general exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleGeneralException(Exception ex, WebRequest request) {
+        logger.error("Unexpected error: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage(), request.getDescription(false));
+    }
+
+    // Handle other custom exceptions (if any)
+    @ExceptionHandler(TodoAlreadyExistsException.class)
+    public ResponseEntity<Object> handleTodoAlreadyExistsException(TodoAlreadyExistsException ex, WebRequest request) {
+        logger.error("Todo already exists: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), request.getDescription(false));
+    }
+
+    // Handle APIException (To apply when todo exist ect ...
+    @ExceptionHandler(APIException.class)
+    public ResponseEntity<Object> handleAPIException(APIException ex, WebRequest request) {
+        logger.error("API Exception: {}", ex.getMessage());
+        return buildErrorResponse(ex.getStatus(), "API Error", ex.getMessage(), request.getDescription(false));
+    }
+
+
+
 }

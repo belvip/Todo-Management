@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCompleted {
-    String message() default "Task must be marked as tue or false to be completed";
+    String message() default "Task must be marked as true or false to be completed";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

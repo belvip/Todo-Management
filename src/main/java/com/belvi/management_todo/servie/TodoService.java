@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface TodoService {
     TodoResponse getAllTodos();
-    void addTodo(Todo todo);
-    String deleteTodo(Long todoId);
-    Todo updateTodo(Todo todo, Long todoId);
-    Todo completeTodo(Long todoId);
-    Todo inCompleteTodo(Long todoId);
+    TodoDTO addTodo(TodoDTO todoDTO);
+    TodoDTO deleteTodo(Long todoId);
+    TodoDTO updateTodo(TodoDTO todoDTO, Long todoId);
+    TodoDTO completeTodo(Long todoId);
+    TodoDTO inCompleteTodo(Long todoId);
 }

@@ -6,17 +6,11 @@ import com.belvi.management_todo.exception.ResourceNotFoundException;
 import com.belvi.management_todo.model.Todo;
 import com.belvi.management_todo.repositories.TodoRepository;
 import com.belvi.management_todo.servie.TodoService;
-import com.zaxxer.hikari.util.FastList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -26,8 +20,17 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public List<Todo> getAllTodos() {
-        return todoRepository.findAll();
+        // Retrieve the list of todos
+        List<Todo> todos = todoRepository.findAll();
+
+        // Check if the list is empty
+        if (todos.isEmpty()) {
+            throw new APIException(HttpStatus.NOT_FOUND, "No todo created till now");
+        }
+
+        return todos;
     }
+
 
     // Mehod to add new Todo
     @Override

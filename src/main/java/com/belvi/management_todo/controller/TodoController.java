@@ -1,5 +1,6 @@
 package com.belvi.management_todo.controller;
 
+import com.belvi.management_todo.config.AppConstants;
 import com.belvi.management_todo.model.Todo;
 import com.belvi.management_todo.payload.TodoDTO;
 import com.belvi.management_todo.payload.TodoResponse;
@@ -28,8 +29,8 @@ public class TodoController {
     // Get all todo
     @GetMapping("/public/todos")
     public ResponseEntity<TodoResponse> getAllTodos(
-            @RequestParam(name = "pageNumber") Integer pageNumber,
-            @RequestParam(name = "pageSize") Integer pageSize) {
+            @RequestParam(name = "pageNumber",  defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize) {
         TodoResponse todoResponse = todoService.getAllTodos(pageNumber,pageSize);
         return new ResponseEntity<>(todoResponse, HttpStatus.OK);
     }

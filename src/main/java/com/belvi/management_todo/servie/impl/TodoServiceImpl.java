@@ -10,6 +10,9 @@ import com.belvi.management_todo.repositories.TodoRepository;
 import com.belvi.management_todo.servie.TodoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +28,13 @@ public class TodoServiceImpl implements TodoService {
     private ModelMapper modelMapper;
 
     @Override
-    public TodoResponse getAllTodos() {
+    public TodoResponse getAllTodos(Integer pageNumber, Integer pageSize) {
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+        Page<Todo> todoPage = todoRepository.findAll(pageDetails);
+
         // Retrieve the list of todos
-        List<Todo> todos = todoRepository.findAll();
+        List<Todo> todos = todoPage.getContent();
 
         // Check if the list is empty
         if (todos.isEmpty()) {
@@ -40,9 +47,15 @@ public class TodoServiceImpl implements TodoService {
 
         TodoResponse todoResponse = new TodoResponse();
         todoResponse.setContent(todoDTOS);
+        todoResponse.setPageNumber(todoPage.getNumber());
+        todoResponse.setPageSize(todoPage.getSize());
+        todoResponse.setTotalElements(todoPage.getTotalElements());
+        todoResponse.setTotalPages(todoPage.getTotalPages());
+        todoResponse.setLastPage(todoPage.isLast());
 
         return todoResponse;
     }
+
 
 
     // Mehod to add new Todo

@@ -7,7 +7,7 @@ import com.belvi.management_todo.payload.TodoResponse;
 import java.util.List;
 
 public interface TodoService {
-    TodoResponse getAllTodos();
+    TodoResponse getAllTodos(Integer pageNumber,Integer pageSize);
     TodoDTO addTodo(TodoDTO todoDTO);
     TodoDTO deleteTodo(Long todoId);
     TodoDTO updateTodo(TodoDTO todoDTO, Long todoId);

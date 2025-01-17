@@ -27,8 +27,10 @@ public class TodoController {
 
     // Get all todo
     @GetMapping("/public/todos")
-    public ResponseEntity<TodoResponse> getAllTodos(){
-        TodoResponse todoResponse = todoService.getAllTodos();
+    public ResponseEntity<TodoResponse> getAllTodos(
+            @RequestParam(name = "pageNumber") Integer pageNumber,
+            @RequestParam(name = "pageSize") Integer pageSize) {
+        TodoResponse todoResponse = todoService.getAllTodos(pageNumber,pageSize);
         return new ResponseEntity<>(todoResponse, HttpStatus.OK);
     }
 

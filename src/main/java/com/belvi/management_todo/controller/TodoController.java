@@ -30,8 +30,10 @@ public class TodoController {
     @GetMapping("/public/todos")
     public ResponseEntity<TodoResponse> getAllTodos(
             @RequestParam(name = "pageNumber",  defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
-            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize) {
-        TodoResponse todoResponse = todoService.getAllTodos(pageNumber,pageSize);
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy",  defaultValue = AppConstants.SORT_TODOS_BY, required = false) String sortBy,
+            @RequestParam(name = "sortOrder",  defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder) {
+        TodoResponse todoResponse = todoService.getAllTodos(pageNumber,pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(todoResponse, HttpStatus.OK);
     }
 
